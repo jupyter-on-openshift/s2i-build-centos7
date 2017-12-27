@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# By default would run as user ID 1001. If the user ID is much higher
+# then assume that running with assigned user ID and need to add an
+# entry into the passwd file for that user.
+
+if [ `id -u` -ge 10000 ]; then
+    cat /etc/passwd | sed -e "s/^default:/builder:/" > /tmp/passwd
+    echo "default:x:`id -u`:`id -g`:,,,:/opt/app-root/src:/bin/bash" >> /tmp/passwd
+    cat /tmp/passwd > /etc/passwd
+    rm /tmp/passwd
+fi
