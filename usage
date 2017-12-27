@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cat <<EOF
+This is a S2I builder for create S2I builders.
+
+For details on using this S2I builder see:
+
+* https://github.com/jupyter-on-openshift/s2i-build-centos7
+EOF

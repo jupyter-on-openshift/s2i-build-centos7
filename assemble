@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -x
+
+set -eo pipefail
+
+# Move files from where the S2I build process injects them to the
+# directory /opt/app-root/s2i. We leave the /opt/app-root/src directory
+# alone as that is the directory the subsequent S2I builder will use.
+# We remove the .git directory in case a binary input build was used.
+
+echo "Moving source files into place."
+
+rm -rf /tmp/src/.git*
+
+mv /tmp/src /opt/app-root/s2i
+
+# Change the working directory to /opt/app-root/s2i and if a build
+# script has been provided run it.
+
+cd /opt/app-root/s2i
+
+test -x build && ./build
+
+# Now move the S2I scripts into /usr/libexec/s2i. Any additonal files
+# these need will remain behind in the /opt/app-root/s2i directory.
+
+test -x usage && mv usage /usr/libexec/s2i
+test -x assemble && mv assemble /usr/libexec/s2i
+test -x run && mv run /usr/libexec/s2i
+test -x save-artifacts && mv save-artifacts /usr/libexec/s2i
+
+# Check for any image_metadata.json file. If one exists, move it into
+# the /tmp/.s2i directory where the S2I build process will fetch it from.
+
+if [ -f image_metadata.json ]; then
+    mkdir -p /tmp/.s2i
+    mv image_metadata.json /tmp/.s2i/image_metadata.json
+fi
+
+# Fixup permissions.
+
+echo "Fixing permissions."
+
+fix-permissions /usr/libexec/s2i
+
+fix-permissions /opt/app-root
