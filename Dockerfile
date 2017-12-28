@@ -16,4 +16,6 @@ RUN chmod +w /etc/passwd && \
     chown -R 1001:0 /usr/libexec/s2i && \
     fix-permissions /usr/libexec/s2i
 
+EXPOSE 8080
+
 USER 1001
