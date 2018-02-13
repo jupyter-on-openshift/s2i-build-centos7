@@ -19,12 +19,13 @@ the directory ``/usr/libexec/s2i`` to make it easy to place custom S2I
 scripts in the default S2I script location, avoiding the need to change the
 image metadata describing where they reside.
 
-The ``/etc/passwd`` file is also made writable and a ``fix-passwd-entry``
-script provided. This will be run automatically from the container
-entrypoint script to add an entry to ``/etc/passwd`` for the assigned user
-ID that a container is run as. This avoids problems with applications which
-expect a valid user entry in the ``/etc/passwd`` file for the user the
-application runs as.
+The ``/etc/passwd`` and ``/etc/group`` files are also made writable and
+a ``fix-passwd-entry`` script provided. This will be run automatically
+from the container entrypoint script to add an entry to ``/etc/passwd``
+for the assigned user ID that a container is run as, and a corresponding
+entry to ``/etc/group``. This avoids problems with applications which
+expect a valid user/group entries in the ``/etc/passwd`` and ``/etc/group``
+files for the user the application runs as.
 
 Finally, to make it easier to use, this S2I builder will do the work of
 moving the S2I scripts provided in the source code used with the builder to
